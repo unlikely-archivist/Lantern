@@ -9,7 +9,7 @@
   </head>
   <body>
     <header class="site-header" id="home">
-      <a class="quiet-link" href="art.html">View art collection</a>
+      <a class="quiet-link" href="art.html">Artist references</a>
       <h1>THE LANTERN</h1>
       <p class="tagline">Filtering archives through the lens of visual research to discover the strange, forgotten, overlooked, and useful details of everyday life.</p>
     </header>
@@ -17,7 +17,7 @@
     <main>
       <section class="section-block archive-home" id="archive">
         <div class="gallery-tools">
-          <span class="section-kicker">Unfiltered archive gallery</span>
+          <span class="section-kicker">Archive gallery</span>
           <label class="top-search" for="archiveSearch">
             <span>Search</span>
             <input id="archiveSearch" type="search" placeholder="dog, ritual, guard..." />
@@ -27,7 +27,7 @@
 
         <div class="archive-layout">
           <aside class="filter-sidebar" aria-label="Archive filters">
-            <details class="filter-drawer">
+            <details class="filter-drawer" open>
               <summary>Filters</summary>
 
               <div class="filter-group" data-filter="subjects">
@@ -82,6 +82,28 @@
         </div>
       </section>
     </main>
+
+    <!-- LIGHTBOX -->
+    <div class="lb-overlay" id="lightbox" role="dialog" aria-modal="true">
+      <div class="lb-inner">
+        <div class="lb-img-side">
+          <img id="lb-img" src="" alt="" />
+          <div class="lb-nav">
+            <button id="lb-prev">&#8592; Prev</button>
+            <button id="lb-next">Next &#8594;</button>
+          </div>
+        </div>
+        <div class="lb-info-side">
+          <button class="lb-close" id="lb-close">[ Close ]</button>
+          <p class="lb-title" id="lb-title"></p>
+          <p class="lb-meta" id="lb-meta"></p>
+          <p class="lb-caption" id="lb-caption"></p>
+          <p class="lb-subjects" id="lb-subjects"></p>
+          <div class="lb-tags" id="lb-tags"></div>
+          <a class="lb-link" id="lb-link" href="" target="_blank" rel="noreferrer">Open source →</a>
+        </div>
+      </div>
+    </div>
 
     <script src="script.js" type="module"></script>
   </body>
