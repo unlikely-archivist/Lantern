@@ -26,14 +26,66 @@
           <p class="eyebrow">Archival photographs, newspapers, illustrations, institutional collections, and public-domain material</p>
           <h2>Archive</h2>
         </div>
-        <div class="filter-panel" data-section="archive">
-          <input id="archiveSearch" type="search" placeholder="Search archive titles, notes, or tags..." />
-          <select id="archiveType"><option value="">TYPE</option></select>
-          <select id="archiveColor"><option value="">SAT</option></select>
-          <button type="button" data-reset="archive">Reset</button>
-          <span class="filter-count" id="archiveCount"></span>
+
+        <div class="archive-layout">
+          <aside class="filter-sidebar" aria-label="Archive filters">
+            <div class="filter-group search-group">
+              <label class="filter-label" for="archiveSearch">Search</label>
+              <input id="archiveSearch" type="search" placeholder="dog, undertaker, ritual..." />
+            </div>
+
+            <div class="filter-group" data-filter="subjects">
+              <p class="filter-label">Subjects</p>
+              <div class="filter-options" id="archiveSubjects"></div>
+            </div>
+
+            <div class="filter-group" data-filter="imageStyle">
+              <p class="filter-label">Image Style</p>
+              <div class="filter-options" id="archiveImageStyle"></div>
+            </div>
+
+            <div class="filter-group" data-filter="peopleCount">
+              <p class="filter-label">Subjects in Image</p>
+              <div class="filter-options" id="archivePeopleCount"></div>
+            </div>
+
+            <div class="filter-group" data-filter="shot">
+              <p class="filter-label">Shot</p>
+              <div class="filter-options" id="archiveShot"></div>
+            </div>
+
+            <div class="filter-group" data-filter="locationType">
+              <p class="filter-label">Location Type</p>
+              <div class="filter-options" id="archiveLocationType"></div>
+            </div>
+
+            <div class="filter-group" data-filter="continent">
+              <p class="filter-label">Continent</p>
+              <div class="filter-options" id="archiveContinent"></div>
+            </div>
+
+            <div class="filter-group" data-filter="timePeriod">
+              <p class="filter-label">Time Period</p>
+              <div class="filter-options" id="archiveTimePeriod"></div>
+            </div>
+
+            <div class="filter-group" data-filter="medium">
+              <p class="filter-label">Medium</p>
+              <div class="filter-options" id="archiveMedium"></div>
+            </div>
+
+            <div class="filter-actions">
+              <button type="button" data-reset="archive">Reset Filters</button>
+            </div>
+          </aside>
+
+          <div class="archive-results">
+            <div class="results-bar">
+              <span class="filter-count" id="archiveCount"></span>
+            </div>
+            <div id="archiveGrid" class="card-grid" aria-live="polite"></div>
+          </div>
         </div>
-        <div id="archiveGrid" class="card-grid" aria-live="polite"></div>
       </section>
 
       <section class="section-block" id="artist-references">
@@ -43,7 +95,6 @@
         </div>
         <div class="filter-panel" data-section="references">
           <input id="referencesSearch" type="search" placeholder="Search artist references..." />
-          <select id="referencesType"><option value="">TYPE</option></select>
           <button type="button" data-reset="references">Reset</button>
           <span class="filter-count" id="referencesCount"></span>
         </div>
