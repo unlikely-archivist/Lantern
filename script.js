@@ -29,7 +29,15 @@ function normalizeTag(tag) {
   return value.startsWith('#') ? value : `#${value}`;
 }
 
+function parseTags(value) {
+  if (Array.isArray(value)) return value.map(normalizeTag).filter(Boolean);
+  if (typeof value === 'string') return value.split(',').map(normalizeTag).filter(Boolean);
+  return [];
+}
+
 function normalizeRecord(record) {
+  const tags = parseTags(record.final_tags || record.finalTags || record.tags);
+
   return {
     title: record.title || record.name || 'Untitled record',
     media: record.media || record.medium || '',
@@ -37,7 +45,7 @@ function normalizeRecord(record) {
     imgSrc: record.imgSrc || record.imageUrl || record.image_url || record.thumbnail || '',
     sourceUrl: record.sourceUrl || record.source_url || record.url || '',
     dateAdded: record.dateAdded || record.date_added || '',
-    tags: Array.isArray(record.tags) ? record.tags.map(normalizeTag).filter(Boolean) : [],
+    tags,
     caption: record.caption || record.notes || record.description || '',
     color: record.color || '',
     loc: record.loc || record.location_type || '',
