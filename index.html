@@ -9,21 +9,26 @@
   </head>
   <body>
     <header class="site-header" id="home">
+      <a class="quiet-link" href="art.html">View art collection</a>
       <h1>THE LANTERN</h1>
       <p class="tagline">Filtering archives through the lens of visual research to discover the strange, forgotten, overlooked, and useful details of everyday life.</p>
     </header>
 
     <main>
       <section class="section-block archive-home" id="archive">
+        <div class="gallery-tools">
+          <span class="section-kicker">Unfiltered archive gallery</span>
+          <label class="top-search" for="archiveSearch">
+            <span>Search</span>
+            <input id="archiveSearch" type="search" placeholder="dog, ritual, guard..." />
+          </label>
+          <span class="filter-count" id="archiveCount"></span>
+        </div>
+
         <div class="archive-layout">
           <aside class="filter-sidebar" aria-label="Archive filters">
-            <details class="filter-drawer" open>
-              <summary>Filter</summary>
-
-              <div class="filter-group search-group">
-                <label class="filter-label" for="archiveSearch">Search</label>
-                <input id="archiveSearch" type="search" placeholder="dog, ritual, guard..." />
-              </div>
+            <details class="filter-drawer">
+              <summary>Filters</summary>
 
               <div class="filter-group" data-filter="subjects">
                 <p class="filter-label">Subjects</p>
@@ -72,10 +77,6 @@
           </aside>
 
           <div class="archive-results">
-            <div class="results-bar">
-              <span class="section-kicker">Unfiltered archive gallery</span>
-              <span class="filter-count" id="archiveCount"></span>
-            </div>
             <div id="archiveGrid" class="card-grid" aria-live="polite"></div>
           </div>
         </div>
