@@ -221,6 +221,39 @@ nav a:active { border: 2px inset #fff; }
 
 .card-link:hover { text-decoration: underline; }
 
+.tag-index {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
+.tag-index-item {
+  align-items: center;
+  background: #ddd;
+  border: 2px outset #fff;
+  color: var(--link);
+  display: flex;
+  font-size: 12px;
+  justify-content: space-between;
+  min-height: 34px;
+  padding: 7px 9px;
+  text-decoration: none;
+}
+
+.tag-index-item:active { border: 2px inset #fff; }
+.tag-index-item:hover { text-decoration: underline; }
+
+.tag-count {
+  background: var(--panel);
+  border: 1px solid #999;
+  color: #333;
+  font-size: 10px;
+  margin-left: 8px;
+  min-width: 22px;
+  padding: 2px 5px;
+  text-align: center;
+}
+
 .empty-state {
   color: #666;
   font-size: 14px;
