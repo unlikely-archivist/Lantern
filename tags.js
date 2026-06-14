@@ -13,10 +13,16 @@ function normalizeTag(tag) {
   return value.startsWith('#') ? value : `#${value}`;
 }
 
+function parseTags(value) {
+  if (Array.isArray(value)) return value.map(normalizeTag).filter(Boolean);
+  if (typeof value === 'string') return value.split(',').map(normalizeTag).filter(Boolean);
+  return [];
+}
+
 function normalizeRecord(record) {
   return {
     title: record.title || record.name || 'Untitled record',
-    tags: Array.isArray(record.tags) ? record.tags.map(normalizeTag).filter(Boolean) : []
+    tags: parseTags(record.final_tags || record.finalTags || record.tags)
   };
 }
 
