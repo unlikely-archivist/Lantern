@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tags · The Lantern</title>
+    <meta name="description" content="A tag index for The Lantern archive and artist reference records." />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header" id="home">
+      <p class="eyebrow">A visual index</p>
+      <h1>THE LANTERN</h1>
+      <p class="tagline">Tags gathered from approved Lantern archive and artist reference records.</p>
+      <nav aria-label="Primary navigation">
+        <a href="index.html#archive">Archive</a>
+        <a href="index.html#artist-references">Artist References</a>
+        <a href="tags.html" aria-current="page">Tags</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="section-block" id="tags">
+        <div class="section-heading">
+          <p class="eyebrow">Automatically assembled from every record with a tags array</p>
+          <h2>Tags</h2>
+        </div>
+
+        <div class="filter-panel">
+          <input id="tagSearch" type="search" placeholder="Search tags..." />
+          <span class="filter-count" id="tagCount"></span>
+        </div>
+
+        <div id="tagIndex" class="tag-index" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <footer>
+      <p>The Lantern is published from approved spreadsheet records.</p>
+    </footer>
+
+    <script src="tags.js" type="module"></script>
+  </body>
+</html>
