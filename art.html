@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gallery of Art · The Lantern</title>
+    <meta name="description" content="The Lantern artist reference gallery." />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header" id="home">
+      <p class="eyebrow">A visual index</p>
+      <h1>THE LANTERN</h1>
+      <p class="tagline">Artist references, contemporary visual notes, and art-adjacent research material.</p>
+      <nav aria-label="Primary navigation">
+        <a href="index.html">Archive</a>
+        <a href="art.html" aria-current="page">Gallery of Art</a>
+        <a href="tags.html">Tags</a>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLScBTfsRQ6QaUW9s6V2RIEIzqGD6MuRcUFmSDqBhUTJuetJHtQ/viewform" target="_blank" rel="noreferrer">Request</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="section-block" id="artist-references">
+        <div class="section-heading">
+          <p class="eyebrow">Unfiltered art reference gallery · newest records first</p>
+          <h2>Gallery of Art</h2>
+        </div>
+
+        <div class="archive-layout">
+          <aside class="filter-sidebar" aria-label="Art reference filters">
+            <div class="filter-group search-group">
+              <label class="filter-label" for="referencesSearch">Search</label>
+              <input id="referencesSearch" type="search" placeholder="artist, movement, note..." />
+            </div>
+
+            <div class="filter-group">
+              <p class="filter-label">Parameters</p>
+              <p class="filter-empty">Art-reference filters will appear here when those fields are published.</p>
+            </div>
+
+            <div class="filter-actions">
+              <button type="button" data-reset="references">Reset Filters</button>
+            </div>
+          </aside>
+
+          <div class="archive-results">
+            <div class="results-bar">
+              <span class="filter-count" id="referencesCount"></span>
+            </div>
+            <div id="referencesGrid" class="card-grid" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>The Lantern is published from approved spreadsheet records.</p>
+    </footer>
+
+    <script src="script.js" type="module"></script>
+  </body>
+</html>
