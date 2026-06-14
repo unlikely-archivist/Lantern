@@ -23,6 +23,12 @@ const state = {
   references: []
 };
 
+function normalizeTag(tag) {
+  const value = String(tag || '').trim();
+  if (!value) return '';
+  return value.startsWith('#') ? value : `#${value}`;
+}
+
 function normalizeRecord(record) {
   return {
     title: record.title || record.name || 'Untitled record',
@@ -31,7 +37,7 @@ function normalizeRecord(record) {
     imgSrc: record.imgSrc || record.imageUrl || record.image_url || record.thumbnail || '',
     sourceUrl: record.sourceUrl || record.source_url || record.url || '',
     dateAdded: record.dateAdded || record.date_added || '',
-    tags: Array.isArray(record.tags) ? record.tags : [],
+    tags: Array.isArray(record.tags) ? record.tags.map(normalizeTag).filter(Boolean) : [],
     caption: record.caption || record.notes || record.description || '',
     color: record.color || '',
     loc: record.loc || record.location_type || '',
@@ -133,6 +139,15 @@ function reset(section) {
   render(section);
 }
 
+function applyTagFromUrl() {
+  const tag = new URLSearchParams(window.location.search).get('tag');
+  if (!tag) return;
+
+  const normalizedTag = normalizeTag(tag);
+  if (SOURCES.archive.search) SOURCES.archive.search.value = normalizedTag;
+  if (SOURCES.references.search) SOURCES.references.search.value = normalizedTag;
+}
+
 function escapeHtml(value) {
   return String(value).replace(/[&<>"]/g, (character) => ({
     '&': '&amp;',
@@ -155,8 +170,10 @@ async function init() {
     config.type?.addEventListener('change', () => render(section));
     config.color?.addEventListener('change', () => render(section));
     document.querySelector(`[data-reset="${section}"]`)?.addEventListener('click', () => reset(section));
-    render(section);
   }));
+
+  applyTagFromUrl();
+  Object.keys(SOURCES).forEach(render);
 }
 
 init();
