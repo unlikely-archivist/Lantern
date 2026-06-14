@@ -55,7 +55,7 @@ function renderTags(tags) {
 
   tagIndex.innerHTML = filteredTags.length
     ? filteredTags.map(([tag, count]) => `
-      <a class="tag-index-item" href="index.html#archive?tag=${encodeURIComponent(tag)}">
+      <a class="tag-index-item" href="index.html?tag=${encodeURIComponent(tag)}#archive">
         <span>${escapeHtml(tag)}</span>
         <span class="tag-count">${count}</span>
       </a>
