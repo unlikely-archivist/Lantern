@@ -13,17 +13,17 @@
       <h1>THE LANTERN</h1>
       <p class="tagline">Filtering archives through the lens of visual research to discover the strange, forgotten, overlooked, and useful details of everyday life.</p>
       <nav aria-label="Primary navigation">
-        <a href="#archive">Archive</a>
-        <a href="#artist-references">Artist References</a>
+        <a href="index.html" aria-current="page">Archive</a>
+        <a href="art.html">Gallery of Art</a>
         <a href="tags.html">Tags</a>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLScBTfsRQ6QaUW9s6V2RIEIzqGD6MuRcUFmSDqBhUTJuetJHtQ/viewform" target="_blank" rel="noreferrer">Submit</a>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLScBTfsRQ6QaUW9s6V2RIEIzqGD6MuRcUFmSDqBhUTJuetJHtQ/viewform" target="_blank" rel="noreferrer">Request</a>
       </nav>
     </header>
 
     <main>
       <section class="section-block" id="archive">
         <div class="section-heading">
-          <p class="eyebrow">Archival photographs, newspapers, illustrations, institutional collections, and public-domain material</p>
+          <p class="eyebrow">Unfiltered archive gallery · newest records first</p>
           <h2>Archive</h2>
         </div>
 
@@ -86,19 +86,6 @@
             <div id="archiveGrid" class="card-grid" aria-live="polite"></div>
           </div>
         </div>
-      </section>
-
-      <section class="section-block" id="artist-references">
-        <div class="section-heading">
-          <p class="eyebrow">Modern photographers, contemporary artists, and visual references</p>
-          <h2>Artist References</h2>
-        </div>
-        <div class="filter-panel" data-section="references">
-          <input id="referencesSearch" type="search" placeholder="Search artist references..." />
-          <button type="button" data-reset="references">Reset</button>
-          <span class="filter-count" id="referencesCount"></span>
-        </div>
-        <div id="referencesGrid" class="card-grid" aria-live="polite"></div>
       </section>
     </main>
 
