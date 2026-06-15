@@ -73,7 +73,9 @@ document.addEventListener('keydown',e=>{if(!lb.classList.contains('open'))return
 // ── CARDS ──
 function card(r,index){
   const img=r.imgSrc?`<img src="${attr(r.imgSrc)}" alt="${attr(r.title)}" loading="lazy"/>`:'<div class="img-fallback">No image</div>';
-  return`<article class="card" data-index="${index}"><div class="card-img-wrap">${img}</div><div class="card-body"><p class="card-title">${esc(r.title)}</p></div></article>`
+  const meta=[r.medium,r.imageStyle,r.timePeriod].filter(v=>v&&v!=='Unknown').join(' / ')||'Archive record';
+  const tagLine=r.tags.slice(0,3).join(' ');
+  return`<article class="card" data-index="${index}"><div class="card-number">${String(index+1).padStart(2,'0')}</div><div class="card-img-wrap">${img}</div><div class="card-body"><p class="card-title">${esc(r.title)}</p><p class="card-meta">${esc(meta)}</p><p class="card-tags">${esc(tagLine)}</p></div></article>`
 }
 
 function render(section){
