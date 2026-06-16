@@ -5,84 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>The Lantern</title>
     <meta name="description" content="The Lantern archive and artist reference index." />
-    <link rel="stylesheet" href="styles.css?v=9" />
+    <link rel="stylesheet" href="styles.css?v=10" />
   </head>
   <body>
+    <a class="corner-link" href="art.html">View art collection</a>
+
     <header class="site-header" id="home">
-      <a class="quiet-link" href="art.html">View art collection</a>
-      <h1>THE LANTERN</h1>
-      <p class="tagline">Filtering archives through the lens of visual research to discover the strange, forgotten, overlooked, and useful details of everyday life.</p>
+      <h1><span>THE</span><span>LANTERN</span></h1>
+      <div class="rule-star" aria-hidden="true"><span></span><b>✷</b><span></span></div>
+      <p class="tagline">Filtering archives through the lens of my personal interests to discover the weird, the strange, the forgotten, and the overlooked details of everyday life.</p>
     </header>
 
     <main>
       <section class="section-block archive-home" id="archive">
         <div class="gallery-tools">
-          <span class="section-kicker">Unfiltered archive gallery</span>
           <label class="top-search" for="archiveSearch">
-            <span>Search</span>
-            <input id="archiveSearch" type="search" placeholder="dog, ritual, guard..." />
+            <input id="archiveSearch" type="search" placeholder="Search title or #tags..." />
           </label>
-          <span class="filter-count" id="archiveCount"></span>
+
+          <div class="quick-filters" aria-label="Archive filters">
+            <select id="filterImageStyle"><option value="">Color</option></select>
+            <select id="filterLocationType"><option value="">Loc</option></select>
+            <select id="filterContinent"><option value="">Continent</option></select>
+            <select id="filterSubjects"><option value="">Subj</option></select>
+            <select id="filterShot"><option value="">Shot</option></select>
+            <button type="button" data-reset="archive">Reset</button>
+          </div>
         </div>
 
-        <div class="archive-layout">
-          <aside class="filter-sidebar" aria-label="Archive filters">
-            <details class="filter-drawer">
-              <summary>Filters</summary>
-
-              <div class="filter-group" data-filter="subjects">
-                <p class="filter-label">Subjects</p>
-                <div class="filter-options" id="archiveSubjects"></div>
-              </div>
-
-              <div class="filter-group" data-filter="imageStyle">
-                <p class="filter-label">Style</p>
-                <div class="filter-options" id="archiveImageStyle"></div>
-              </div>
-
-              <div class="filter-group" data-filter="peopleCount">
-                <p class="filter-label">People</p>
-                <div class="filter-options" id="archivePeopleCount"></div>
-              </div>
-
-              <div class="filter-group" data-filter="shot">
-                <p class="filter-label">Shot</p>
-                <div class="filter-options" id="archiveShot"></div>
-              </div>
-
-              <div class="filter-group" data-filter="locationType">
-                <p class="filter-label">Place</p>
-                <div class="filter-options" id="archiveLocationType"></div>
-              </div>
-
-              <div class="filter-group" data-filter="continent">
-                <p class="filter-label">Region</p>
-                <div class="filter-options" id="archiveContinent"></div>
-              </div>
-
-              <div class="filter-group" data-filter="timePeriod">
-                <p class="filter-label">Time</p>
-                <div class="filter-options" id="archiveTimePeriod"></div>
-              </div>
-
-              <div class="filter-group" data-filter="medium">
-                <p class="filter-label">Medium</p>
-                <div class="filter-options" id="archiveMedium"></div>
-              </div>
-
-              <div class="filter-actions">
-                <button type="button" data-reset="archive">Reset</button>
-              </div>
-            </details>
-          </aside>
-
-          <div class="archive-results">
-            <div id="archiveGrid" class="card-grid" aria-live="polite"></div>
-          </div>
+        <div class="archive-results">
+          <p class="filter-count" id="archiveCount"></p>
+          <div id="archiveGrid" class="card-grid" aria-live="polite"></div>
+          <nav class="pagination" id="archivePagination" aria-label="Archive pages"></nav>
         </div>
       </section>
     </main>
 
-    <script src="script.js?v=9" type="module"></script>
+    <footer class="site-footer">
+      <a href="#home">[New]</a>
+      <a href="#archive">[Contents]</a>
+      <a href="#home">[Info]</a>
+      <a href="#archive">[Dept.]</a>
+      <a href="art.html">[Eryn’s Reference Collection]</a>
+    </footer>
+
+    <script src="script.js?v=10" type="module"></script>
   </body>
 </html>
