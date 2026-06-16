@@ -1,12 +1,22 @@
 /**
  * build-data.mjs
- * Searches the Library of Congress for images matching Lantern/New Mercy criteria.
- * Writes results to data/archive-data.json for publication.
+ * Searches the Smithsonian Open Access API for images matching Lantern/New Mercy
+ * criteria and writes results to data/archive-data.json for publication.
+ *
+ * Why Smithsonian instead of LOC: the Library of Congress blocks requests coming
+ * from data-center IPs (which is what GitHub Actions runs on), returning 403 to
+ * every request. The Smithsonian Open Access API is built for automated access
+ * and works fine from GitHub. It returns public-domain (CC0) images as JSON.
+ *
+ * Requires a free api.data.gov key, stored as the repo secret SMITHSONIAN_API_KEY.
  */
 
 import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'node:fs';
 
 mkdirSync('data', { recursive: true });
+
+const API_KEY = process.env.SMITHSONIAN_API_KEY;
+const API_BASE = 'https://api.si.edu/openaccess/api/v1.0/search';
 
 const SEARCH_TERMS = [
   'fortune teller', 'circus sideshow', 'spirit photography',
@@ -24,7 +34,7 @@ const SEARCH_TERMS = [
 const PER_TERM = 5;
 const MAX_NEW_PER_RUN = 50;
 
-// Read existing records — check both possible locations
+// Read existing records — check both possible locations.
 let existing = [];
 for (const path of ['data/archive-data.json', 'lantern-data.json']) {
   if (existsSync(path)) {
@@ -37,46 +47,61 @@ for (const path of ['data/archive-data.json', 'lantern-data.json']) {
 const existingUrls = new Set(existing.map(r => r.sourceUrl || r.imgSrc).filter(Boolean));
 console.log(`Existing records: ${existing.length}`);
 
-async function searchLOC(term, count = PER_TERM) {
-  const url = new URL('https://www.loc.gov/photos/');
-  url.searchParams.set('q', term);
-  url.searchParams.set('fo', 'json');
-  url.searchParams.set('c', String(count));
-  url.searchParams.set('at', 'results,pagination');
+async function searchSmithsonian(term, count = PER_TERM) {
+  if (!API_KEY) {
+    console.error('Missing SMITHSONIAN_API_KEY. Add it as a repo secret (Settings -> Secrets and variables -> Actions).');
+    return [];
+  }
+
+  const url = new URL(API_BASE);
+  url.searchParams.set('api_key', API_KEY);
+  // Only return objects that actually have images.
+  url.searchParams.set('q', `${term} AND online_media_type:"Images"`);
+  url.searchParams.set('start', '0');
+  url.searchParams.set('rows', String(count));
 
   try {
-    const res = await fetch(url.toString(), {
-      headers: {
-        'User-Agent': 'LanternArchive/1.0 (https://unlikely-archivist.github.io/Lantern; archival research project)',
-        'Accept': 'application/json',
-      },
-    });
+    const res = await fetch(url.toString(), { headers: { Accept: 'application/json' } });
     if (!res.ok) {
-      console.warn(`LOC search failed for "${term}": ${res.status}`);
+      const body = await res.text();
+      console.warn(`Smithsonian "${term}" -> HTTP ${res.status}: ${body.slice(0, 200)}`);
       return [];
     }
     const data = await res.json();
-    return data.results || [];
+    const rows = data?.response?.rows || [];
+    console.log(`  ${term}: ${rows.length} raw results`);
+    return rows;
   } catch (err) {
-    console.warn(`LOC fetch error for "${term}":`, err.message);
+    console.warn(`Smithsonian fetch error for "${term}":`, err.message);
     return [];
   }
 }
 
 function buildRecord(item) {
-  const imgSrc = item.image_url?.[0]
-    || item.resources?.[0]?.url
-    || item.thumbnail
-    || '';
-  const sourceUrl = item.url || item.id || '';
+  const content = item.content || {};
+  const dnr = content.descriptiveNonRepeating || {};
+  const indexed = content.indexedStructured || {};
+  const freetext = content.freetext || {};
+
+  // Image URL: prefer a CC0 image, fall back to first available media.
+  const media = dnr.online_media?.media || [];
+  const cc0 = media.find(m => m?.usage?.access === 'CC0' && m?.type === 'Images');
+  const chosen = cc0 || media[0] || {};
+  const imgSrc = chosen.content || chosen.thumbnail || '';
+  const sourceUrl = dnr.record_link || dnr.guid || item.id || '';
+
   if (!imgSrc || !sourceUrl) return null;
   if (existingUrls.has(sourceUrl) || existingUrls.has(imgSrc)) return null;
 
-  const title = item.title || item.aka?.[0] || 'Untitled';
+  const title = dnr.title?.content || item.title || 'Untitled';
   const dateAdded = new Date().toISOString().slice(0, 10);
 
-  const rawDate = item.date || item.dates?.[0] || '';
-  const year = parseInt(rawDate?.match(/\d{4}/)?.[0] || '0', 10);
+  // Year: scan the likely date fields for a 4-digit year.
+  const dateCandidates = [
+    ...(indexed.date || []),
+    ...((freetext.date || []).map(d => d?.content || '')),
+  ].join(' ');
+  const year = parseInt(dateCandidates.match(/\d{4}/)?.[0] || '0', 10);
   let time_period = 'Unknown';
   if (year) {
     if (year < 1800) time_period = 'Pre-1800';
@@ -90,26 +115,30 @@ function buildRecord(item) {
     else time_period = '2000–Present';
   }
 
-  const formats = (item.original_format || []).join(' ').toLowerCase();
+  const objectType = (indexed.object_type || []).join(' ').toLowerCase();
   let medium = 'Photography';
-  if (formats.includes('print') || formats.includes('lithograph')) medium = 'Print';
-  if (formats.includes('illustration') || formats.includes('drawing')) medium = 'Illustration';
+  if (objectType.includes('print') || objectType.includes('lithograph')) medium = 'Print';
+  if (objectType.includes('illustration') || objectType.includes('drawing')) medium = 'Illustration';
 
-  const desc = (Array.isArray(item.description) ? item.description.join(' ') : item.description || '').toLowerCase();
-  let image_style = 'Unknown';
-  if (desc.includes('black and white') || desc.includes('b&w')) image_style = 'B&W';
-  else if (desc.includes('color') || desc.includes('colour')) image_style = 'Color';
-  else if (desc.includes('sepia')) image_style = 'Sepia';
-  else if (desc.includes('tintype')) image_style = 'Tintype';
+  const notes = (freetext.notes || []).map(n => n?.content || '').join(' ');
+  const caption = (freetext.notes?.[0]?.content) || dnr.title?.content || '';
 
-  const caption = Array.isArray(item.description) ? item.description[0] || '' : item.description || '';
-  const collection_title = item.partof?.[0]?.title || item.collection?.title || 'Library of Congress';
+  const collection_title =
+    (freetext.setName?.[0]?.content) ||
+    (dnr.data_source) ||
+    'Smithsonian Institution';
 
-  const rawSubjects = [...(item.subject || []), ...(item.subject_headings || [])]
-    .map(s => (typeof s === 'string' ? s : s.title || '').toLowerCase());
-  const tags = rawSubjects.slice(0, 8)
-    .map(s => '#' + s.replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, ''))
+  const topics = (indexed.topic || []).map(t => (typeof t === 'string' ? t : t?.content || ''));
+  const tags = topics.slice(0, 8)
+    .map(s => '#' + s.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, ''))
     .filter(t => t.length > 1);
+
+  let image_style = 'Unknown';
+  const blob = (notes + ' ' + caption).toLowerCase();
+  if (blob.includes('black and white') || blob.includes('b&w')) image_style = 'B&W';
+  else if (blob.includes('sepia')) image_style = 'Sepia';
+  else if (blob.includes('tintype')) image_style = 'Tintype';
+  else if (blob.includes('color') || blob.includes('colour')) image_style = 'Color';
 
   return {
     title, imgSrc, sourceUrl, caption,
@@ -117,19 +146,20 @@ function buildRecord(item) {
     people_count: 'Unknown', shot: 'Unknown',
     location_type: 'Unknown', continent: 'North America',
     time_period, dateAdded,
-    source_id: 'SRC-LOC', collection_title, source_type: 'A',
+    source_id: 'SRC-SI', collection_title, source_type: 'A',
   };
 }
 
 async function main() {
   const newRecords = [];
   const dayIndex = Math.floor(Date.now() / 86400000);
-  const rotated = [...SEARCH_TERMS.slice(dayIndex % SEARCH_TERMS.length), ...SEARCH_TERMS.slice(0, dayIndex % SEARCH_TERMS.length)];
+  const offset = dayIndex % SEARCH_TERMS.length;
+  const rotated = [...SEARCH_TERMS.slice(offset), ...SEARCH_TERMS.slice(0, offset)];
 
   for (const term of rotated) {
     if (newRecords.length >= MAX_NEW_PER_RUN) break;
-    console.log(`Searching LOC: "${term}"`);
-    const results = await searchLOC(term, PER_TERM);
+    console.log(`Searching Smithsonian: "${term}"`);
+    const results = await searchSmithsonian(term, PER_TERM);
     for (const item of results) {
       if (newRecords.length >= MAX_NEW_PER_RUN) break;
       const record = buildRecord(item);
