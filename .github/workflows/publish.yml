@@ -19,12 +19,7 @@ jobs:
   build-data:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@- name: Build data files
-        run: npm run build:data
-        env:
-          SMITHSONIAN_API_KEY: ${{ secrets.SMITHSONIAN_API_KEY }}
-          
+    
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
@@ -32,6 +27,11 @@ jobs:
 
       - name: Build data files
         run: npm run build:data
+
+      - name: Build data files
+        run: npm run build:data
+        env:
+          SMITHSONIAN_API_KEY: ${{ secrets.SMITHSONIAN_API_KEY }}
 
       - name: Validate data files
         run: npm run validate:data
