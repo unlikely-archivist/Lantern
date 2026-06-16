@@ -40,6 +40,10 @@ body { background-color: var(--paper); background-image: radial-gradient(rgba(25
 .card-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 2px; }
 .tag-pill, .tag-more { background: #ddd; border: 1px solid #999; color: #333; font-size: 9px; padding: 2px 4px; text-decoration: none; white-space: nowrap; }
 .tag-pill:hover { text-decoration: underline; }
+.card-actions { border-top: 1px solid #aaa; display: grid; gap: 3px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 3px; padding-top: 5px; }
+.card-action { background: #ddd; border: 2px outset #fff; color: #111; display: block; font-size: 9px; line-height: 1.1; padding: 3px 4px; text-align: center; text-decoration: none; }
+.card-action:hover { color: var(--link); text-decoration: underline; }
+.card-action:active { border: 2px inset #fff; }
 .card-link { color: var(--link); font-size: 10px; margin-top: auto; padding-top: 4px; text-decoration: none; }
 .card-link:hover { text-decoration: underline; }
 .tag-index { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
