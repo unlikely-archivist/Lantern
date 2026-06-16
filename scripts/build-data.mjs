@@ -31,8 +31,9 @@ const SEARCH_TERMS = [
   'occupational portrait', 'carnival worker', 'railroad worker',
 ];
 
-const PER_TERM = 5;
+const PER_TERM = 8;
 const MAX_NEW_PER_RUN = 50;
+const PAGE_WINDOW = 12;
 
 // Read existing records — check both possible locations.
 let existing = [];
@@ -47,7 +48,13 @@ for (const path of ['data/archive-data.json', 'lantern-data.json']) {
 const existingUrls = new Set(existing.map(r => r.sourceUrl || r.imgSrc).filter(Boolean));
 console.log(`Existing records: ${existing.length}`);
 
-async function searchSmithsonian(term, count = PER_TERM) {
+function resultStartFor(termIndex, attempt = 0) {
+  const dayIndex = Math.floor(Date.now() / 86400000);
+  const page = (dayIndex + termIndex + attempt) % PAGE_WINDOW;
+  return page * PER_TERM;
+}
+
+async function searchSmithsonian(term, count = PER_TERM, start = 0) {
   if (!API_KEY) {
     console.error('Missing SMITHSONIAN_API_KEY. Add it as a repo secret (Settings -> Secrets and variables -> Actions).');
     return [];
@@ -57,19 +64,19 @@ async function searchSmithsonian(term, count = PER_TERM) {
   url.searchParams.set('api_key', API_KEY);
   // Only return objects that actually have images.
   url.searchParams.set('q', `${term} AND online_media_type:"Images"`);
-  url.searchParams.set('start', '0');
+  url.searchParams.set('start', String(start));
   url.searchParams.set('rows', String(count));
 
   try {
     const res = await fetch(url.toString(), { headers: { Accept: 'application/json' } });
     if (!res.ok) {
       const body = await res.text();
-      console.warn(`Smithsonian "${term}" -> HTTP ${res.status}: ${body.slice(0, 200)}`);
+      console.warn(`Smithsonian "${term}" start ${start} -> HTTP ${res.status}: ${body.slice(0, 200)}`);
       return [];
     }
     const data = await res.json();
     const rows = data?.response?.rows || [];
-    console.log(`  ${term}: ${rows.length} raw results`);
+    console.log(`  ${term} start ${start}: ${rows.length} raw results`);
     return rows;
   } catch (err) {
     console.warn(`Smithsonian fetch error for "${term}":`, err.message);
@@ -156,21 +163,27 @@ async function main() {
   const offset = dayIndex % SEARCH_TERMS.length;
   const rotated = [...SEARCH_TERMS.slice(offset), ...SEARCH_TERMS.slice(0, offset)];
 
-  for (const term of rotated) {
+  for (let termIndex = 0; termIndex < rotated.length; termIndex += 1) {
     if (newRecords.length >= MAX_NEW_PER_RUN) break;
+    const term = rotated[termIndex];
     console.log(`Searching Smithsonian: "${term}"`);
-    const results = await searchSmithsonian(term, PER_TERM);
-    for (const item of results) {
+
+    for (let attempt = 0; attempt < 3; attempt += 1) {
       if (newRecords.length >= MAX_NEW_PER_RUN) break;
-      const record = buildRecord(item);
-      if (record) {
-        newRecords.push(record);
-        existingUrls.add(record.sourceUrl);
-        existingUrls.add(record.imgSrc);
-        console.log(`  + ${record.title}`);
+      const results = await searchSmithsonian(term, PER_TERM, resultStartFor(termIndex, attempt));
+      for (const item of results) {
+        if (newRecords.length >= MAX_NEW_PER_RUN) break;
+        const record = buildRecord(item);
+        if (record) {
+          newRecords.push(record);
+          existingUrls.add(record.sourceUrl);
+          existingUrls.add(record.imgSrc);
+          console.log(`  + ${record.title}`);
+        }
       }
+      await new Promise(r => setTimeout(r, 250));
+      if (newRecords.length && attempt === 0) break;
     }
-    await new Promise(r => setTimeout(r, 400));
   }
 
   console.log(`\nNew records found: ${newRecords.length}`);
