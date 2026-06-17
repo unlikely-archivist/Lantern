@@ -27,16 +27,21 @@ body {
 .header-divider { color: #999; font-size: 13px; letter-spacing: 8px; margin-top: 8px; }
 .site-header .tagline { font-family: Georgia, "Times New Roman", serif; font-style: italic; font-size: 14px; color: #444; max-width: 620px; margin: 12px auto 0; line-height: 1.5; }
 
-.filter-panel { background: #c8c8c8; border: 2px inset #eee; padding: 12px 14px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.filter-panel { background: #c8c8c8; border: 2px inset #eee; padding: 12px 14px; margin-bottom: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .filter-panel input, .filter-panel select, .filter-panel button { font-family: Arial, sans-serif; font-size: 13px; background: #ececec; border: 2px outset #fff; padding: 5px 9px; color: #000; cursor: pointer; border-radius: 0; }
 .filter-panel input { flex: 1; min-width: 160px; }
 .filter-panel button:active { border: 2px inset #fff; }
 .filter-count { font-size: 12px; color: #555; margin-left: auto; white-space: nowrap; }
 
+.hidden-bar { display: none; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 12px; color: #555; margin-bottom: 18px; }
+.hidden-bar button { font-family: Arial, sans-serif; font-size: 11px; background: #ececec; border: 2px outset #fff; padding: 3px 9px; cursor: pointer; }
+.hidden-bar button:active { border: 2px inset #fff; }
+
 #gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
 
 .card { background: #ececec; border: 2px ridge #c8c8c8; display: flex; flex-direction: column; cursor: pointer; transition: border-color .1s; }
 .card:hover { border-color: #111166; }
+.card.card-hidden { opacity: .5; }
 .card-img-wrap { width: 100%; height: 160px; overflow: hidden; background: #bbb; display: flex; align-items: center; justify-content: center; position: relative; }
 .card-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .card-img-wrap .img-fallback { font-size: 11px; color: #666; text-align: center; padding: 8px; display: none; }
@@ -48,8 +53,12 @@ body {
 .card-tags { display: flex; flex-wrap: wrap; gap: 4px 8px; margin-top: 2px; }
 .tag-link { font-size: 11px; color: #111166; text-decoration: none; cursor: pointer; white-space: nowrap; }
 .tag-link:hover { text-decoration: underline; }
-.card-link { font-size: 11px; color: #111166; text-decoration: none; margin-top: auto; padding-top: 6px; }
+.card-actions { margin-top: auto; padding-top: 8px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.card-link { font-size: 11px; color: #111166; text-decoration: none; }
 .card-link:hover { text-decoration: underline; }
+.card-hide { font-size: 11px; color: #999; text-decoration: none; cursor: pointer; white-space: nowrap; }
+.card-hide:hover { color: #cc0000; text-decoration: underline; }
+.card-hide.unhide:hover { color: #067306; }
 .flag-badge { position: absolute; top: 4px; right: 4px; background: #cc8800; color: #fff; font-size: 9px; padding: 2px 4px; font-weight: bold; }
 
 #empty-state { display: none; text-align: center; padding: 60px 20px; color: #666; font-size: 14px; grid-column: 1 / -1; line-height: 1.5; }
@@ -57,6 +66,24 @@ body {
 .site-footer { margin-top: 24px; padding-top: 14px; border-top: 1px solid #b9b5ad; text-align: center; }
 .site-footer a { font-family: Georgia, "Times New Roman", serif; color: #111166; font-size: 13px; text-decoration: none; margin: 0 8px; white-space: nowrap; }
 .site-footer a:hover { text-decoration: underline; }
+
+/* LIGHTBOX / MODAL */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.78); z-index: 1000;
+  padding: 20px; padding-top: calc(20px + env(safe-area-inset-top)); padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
+.modal-overlay.open { display: flex; align-items: flex-start; justify-content: center; overflow-y: auto; }
+.modal-panel { background: #ececec; border: 2px ridge #cfcfcf; width: 100%; max-width: 640px; margin: auto; position: relative; }
+.modal-close { position: absolute; top: 6px; right: 6px; z-index: 2; font-family: Arial, sans-serif; font-size: 16px; line-height: 1; background: #ececec; border: 2px outset #fff; padding: 3px 10px; cursor: pointer; }
+.modal-close:active { border: 2px inset #fff; }
+.modal-img-wrap { background: #000; display: flex; align-items: center; justify-content: center; min-height: 120px; }
+.modal-img-wrap img { max-width: 100%; max-height: 62vh; object-fit: contain; display: block; }
+.modal-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+.modal-title { font-family: Georgia, "Times New Roman", serif; font-size: 20px; font-weight: bold; color: #990000; line-height: 1.2; }
+.modal-caption { font-size: 13px; color: #333; line-height: 1.5; font-style: italic; }
+.modal-actions { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding-top: 2px; }
+.modal-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 16px 16px; }
+.modal-nav button { font-family: Arial, sans-serif; font-size: 13px; background: #ececec; border: 2px outset #fff; padding: 6px 14px; cursor: pointer; }
+.modal-nav button:active { border: 2px inset #fff; }
+.modal-nav span { font-size: 12px; color: #555; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -78,6 +105,8 @@ body {
   <span class="filter-count" id="filterCount"></span>
 </div>
 
+<div id="hiddenBar" class="hidden-bar"></div>
+
 <div id="gallery"></div>
 
 <footer class="site-footer">
@@ -88,16 +117,43 @@ body {
   <a href="#" onclick="return false;">[Agencies]</a>
 </footer>
 
+<!-- LIGHTBOX -->
+<div id="modal" class="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-panel">
+    <button class="modal-close" onclick="closeModal()" aria-label="Close">&times;</button>
+    <div class="modal-img-wrap"><img id="modalImg" src="" alt=""></div>
+    <div class="modal-body">
+      <div id="modalTitle" class="modal-title"></div>
+      <div id="modalCaption" class="modal-caption"></div>
+      <div id="modalMeta" class="card-meta"></div>
+      <div id="modalSource" class="card-source"></div>
+      <div id="modalTags" class="card-tags"></div>
+      <div class="modal-actions">
+        <a id="modalLink" class="card-link" href="#" target="_blank">View source &rarr;</a>
+        <a id="modalHide" class="card-hide" href="#">&#10005; Hide</a>
+      </div>
+    </div>
+    <div class="modal-nav">
+      <button onclick="modalPrev()">&lsaquo; Prev</button>
+      <span id="modalCounter"></span>
+      <button onclick="modalNext()">Next &rsaquo;</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// The Lantern reads its records from the file your GitHub Action maintains:
-//   data/archive-data.json  (falls back to lantern-data.json if that's missing)
-// This file contains NO image data and is never written by the Action, so it
-// can be replaced freely, it can't lose images, and new images the Action adds
-// appear automatically. It also understands BOTH the old field names
-// (color/loc/manifestation/people) and the new ones the build script writes
-// (image_style/location_type/medium/people_count/time_period/collection_title).
+// Reads records from data/archive-data.json (falls back to lantern-data.json).
+// Click-to-enlarge lightbox with prev/next. A per-card Hide button removes
+// entries you don't like; hides are saved in THIS browser (localStorage) and
+// can be shown again or copied out as a list to make permanent later.
 
 let lanternData = [];
+let filteredList = [];
+let modalIndex = -1;
+
+const HIDDEN_KEY = "lantern_hidden";
+let hiddenSet = new Set();
+let showHidden = false;
 
 const FILTERS = [
   { id: "colorFilter", field: "color", placeholder: "SAT" },
@@ -107,12 +163,18 @@ const FILTERS = [
   { id: "shotFilter", field: "shot", placeholder: "SHOT" }
 ];
 
+function jsStr(s) { return String(s).replace(/\\/g, "\\\\").replace(/'/g, "\\'"); }
+function notUnknown(v) { return (v && v !== "Unknown") ? v : null; }
+
 function normalize(r) {
   r = r || {};
+  const sourceUrl = r.sourceUrl || r.record_link || "";
+  const imgSrc = r.imgSrc || "";
   return {
+    id: sourceUrl || imgSrc || (r.title || r.name || ""),
     title: r.title || r.name || "Untitled",
-    imgSrc: r.imgSrc || "",
-    sourceUrl: r.sourceUrl || r.record_link || "",
+    imgSrc: imgSrc,
+    sourceUrl: sourceUrl,
     caption: r.caption || "",
     tags: Array.isArray(r.tags) ? r.tags : [],
     color: r.color || r.image_style || "",
@@ -124,6 +186,27 @@ function normalize(r) {
     collection: r.collection_title || "",
     flag: r.flag || ""
   };
+}
+
+function loadHidden() {
+  try { const raw = localStorage.getItem(HIDDEN_KEY); if (raw) hiddenSet = new Set(JSON.parse(raw)); } catch (e) {}
+}
+function saveHidden() {
+  try { localStorage.setItem(HIDDEN_KEY, JSON.stringify(Array.from(hiddenSet))); } catch (e) {}
+}
+function hideItem(id) { hiddenSet.add(id); saveHidden(); render(); }
+function unhideItem(id) { hiddenSet.delete(id); saveHidden(); render(); }
+function toggleShowHidden() { showHidden = !showHidden; render(); }
+function copyHidden() {
+  const txt = JSON.stringify(Array.from(hiddenSet), null, 2);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(
+      function () { alert("Copied your hidden list (" + hiddenSet.size + " items)."); },
+      function () { window.prompt("Copy your hidden list:", txt); }
+    );
+  } else {
+    window.prompt("Copy your hidden list:", txt);
+  }
 }
 
 async function load() {
@@ -186,31 +269,46 @@ function matchesFilters(item, f) {
   return true;
 }
 
+function renderHiddenBar() {
+  const bar = document.getElementById("hiddenBar");
+  if (hiddenSet.size === 0) { bar.style.display = "none"; bar.innerHTML = ""; return; }
+  bar.style.display = "flex";
+  bar.innerHTML = hiddenSet.size + ' hidden ' +
+    '<button onclick="toggleShowHidden()">' + (showHidden ? "Hide them" : "Show them") + '</button>' +
+    '<button onclick="copyHidden()">Copy list</button>';
+}
+
 function render() {
   const gallery = document.getElementById("gallery");
   const f = getFilters();
-  const filtered = lanternData.filter(function (item) { return matchesFilters(item, f); });
+  const matched = lanternData.filter(function (item) { return matchesFilters(item, f); });
+  filteredList = showHidden ? matched : matched.filter(function (n) { return !hiddenSet.has(n.id); });
 
-  document.getElementById("filterCount").textContent = filtered.length + " / " + lanternData.length;
+  document.getElementById("filterCount").textContent = filteredList.length + " / " + lanternData.length;
+  renderHiddenBar();
 
-  if (filtered.length === 0) {
+  if (filteredList.length === 0) {
     gallery.innerHTML = '<div id="empty-state" style="display:block;">No results. <a href="#" onclick="resetFilters();return false;">Reset filters</a></div>';
     return;
   }
 
-  gallery.innerHTML = filtered.map(function (n) {
+  gallery.innerHTML = filteredList.map(function (n, idx) {
+    const isHidden = hiddenSet.has(n.id);
+
     const tagsHtml = n.tags.map(function (t) {
-      return '<a class="tag-link" href="#" onclick="filterByTag(\'' + t + '\');return false;">' + t + '</a>';
+      return '<a class="tag-link" href="#" onclick="event.stopPropagation();filterByTag(\'' + jsStr(t) + '\');return false;">' + t + '</a>';
     }).join(" ");
 
-    const notUnknown = function (v) { return (v && v !== "Unknown") ? v : null; };
     const attrs = [n.color, notUnknown(n.loc), notUnknown(n.shot)].filter(Boolean).join(" \u00b7 ");
     const src = [n.continent, n.timePeriod, n.collection].filter(notUnknown).join(" | ");
-
     const flagHtml = n.flag ? '<span class="flag-badge" title="' + String(n.flag).replace(/"/g, "&quot;") + '">!</span>' : "";
 
+    const hideLink = isHidden
+      ? '<a class="card-hide unhide" href="#" onclick="event.stopPropagation();unhideItem(\'' + jsStr(n.id) + '\');return false;">\u21ba Unhide</a>'
+      : '<a class="card-hide" href="#" onclick="event.stopPropagation();hideItem(\'' + jsStr(n.id) + '\');return false;">\u2715 Hide</a>';
+
     return '' +
-      '<div class="card" onclick="window.open(\'' + n.sourceUrl + '\',\'_blank\')">' +
+      '<div class="card' + (isHidden ? ' card-hidden' : '') + '" onclick="openModal(' + idx + ')">' +
         '<div class="card-img-wrap">' +
           '<img src="' + n.imgSrc + '" alt="' + String(n.title).replace(/"/g, "&quot;") + '" loading="lazy" ' +
                'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'">' +
@@ -223,11 +321,99 @@ function render() {
           (attrs ? '<div class="card-meta">' + attrs + '</div>' : '') +
           (src ? '<div class="card-source">' + src + '</div>' : '') +
           '<div class="card-tags">' + tagsHtml + '</div>' +
-          '<a class="card-link" href="' + n.sourceUrl + '" target="_blank" onclick="event.stopPropagation()">View source &rarr;</a>' +
+          '<div class="card-actions">' +
+            '<a class="card-link" href="' + n.sourceUrl + '" target="_blank" onclick="event.stopPropagation()">View source &rarr;</a>' +
+            hideLink +
+          '</div>' +
         '</div>' +
       '</div>';
   }).join("");
 }
+
+function largeImg(url) { return String(url || "").replace(/\/full\/\d+,\//, "/full/1000,/"); }
+
+function openModal(i) {
+  modalIndex = i;
+  renderModal();
+  document.getElementById("modal").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal() {
+  document.getElementById("modal").classList.remove("open");
+  document.body.style.overflow = "";
+  modalIndex = -1;
+}
+
+function modalPrev() {
+  if (!filteredList.length) return;
+  modalIndex = (modalIndex - 1 + filteredList.length) % filteredList.length;
+  renderModal();
+}
+
+function modalNext() {
+  if (!filteredList.length) return;
+  modalIndex = (modalIndex + 1) % filteredList.length;
+  renderModal();
+}
+
+function hideFromModal(id) {
+  hiddenSet.add(id); saveHidden(); render();
+  if (showHidden) { renderModal(); return; }
+  if (!filteredList.length) { closeModal(); return; }
+  if (modalIndex >= filteredList.length) modalIndex = filteredList.length - 1;
+  renderModal();
+}
+
+function unhideFromModal(id) {
+  hiddenSet.delete(id); saveHidden(); render(); renderModal();
+}
+
+function renderModal() {
+  const n = filteredList[modalIndex];
+  if (!n) return;
+
+  const img = document.getElementById("modalImg");
+  img.onerror = function () { img.onerror = null; img.src = n.imgSrc; };
+  img.src = largeImg(n.imgSrc);
+  img.alt = n.title;
+
+  document.getElementById("modalTitle").textContent = n.title;
+
+  const cap = document.getElementById("modalCaption");
+  cap.textContent = n.caption || "";
+  cap.style.display = n.caption ? "" : "none";
+
+  document.getElementById("modalMeta").textContent = [n.color, notUnknown(n.loc), notUnknown(n.shot)].filter(Boolean).join(" \u00b7 ");
+  document.getElementById("modalSource").textContent = [n.continent, n.timePeriod, n.collection].filter(notUnknown).join(" | ");
+
+  document.getElementById("modalTags").innerHTML = n.tags.map(function (t) {
+    return '<a class="tag-link" href="#" onclick="closeModal();filterByTag(\'' + jsStr(t) + '\');return false;">' + t + '</a>';
+  }).join(" ");
+
+  document.getElementById("modalLink").href = n.sourceUrl;
+
+  const mh = document.getElementById("modalHide");
+  const id = n.id;
+  if (hiddenSet.has(id)) {
+    mh.className = "card-hide unhide";
+    mh.innerHTML = "\u21ba Unhide";
+    mh.onclick = function () { unhideFromModal(id); return false; };
+  } else {
+    mh.className = "card-hide";
+    mh.innerHTML = "\u2715 Hide";
+    mh.onclick = function () { hideFromModal(id); return false; };
+  }
+
+  document.getElementById("modalCounter").textContent = (modalIndex + 1) + " / " + filteredList.length;
+}
+
+document.addEventListener("keydown", function (e) {
+  if (modalIndex < 0) return;
+  if (e.key === "Escape") closeModal();
+  else if (e.key === "ArrowLeft") modalPrev();
+  else if (e.key === "ArrowRight") modalNext();
+});
 
 function filterByTag(tag) {
   window._activeTag = tag;
@@ -242,6 +428,7 @@ function resetFilters() {
   render();
 }
 
+loadHidden();
 load();
 </script>
 </body>
