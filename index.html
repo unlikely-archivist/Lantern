@@ -1,61 +1,248 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>The Lantern</title>
-    <meta name="description" content="The Lantern archive and artist reference index." />
-    <link rel="stylesheet" href="styles.css?v=11" />
-  </head>
-  <body>
-    <a class="corner-link" href="art.html">View art collection</a>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>The Lantern</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
 
-    <header class="site-header" id="home">
-      <h1><span>THE</span><span>LANTERN</span></h1>
-      <div class="rule-star" aria-hidden="true"><span></span><b>✷</b><span></span></div>
-      <p class="tagline">Filtering archives through the lens of my personal interests to discover the weird, the strange, the forgotten, and the overlooked details of everyday life.</p>
-    </header>
+body {
+  background-color: #d4d0c8;
+  background-image: radial-gradient(rgba(255,255,255,.18) 1px, transparent 1px);
+  background-size: 4px 4px;
+  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  padding: 22px;
+  padding-top: calc(22px + env(safe-area-inset-top));
+  padding-right: calc(22px + env(safe-area-inset-right));
+  padding-bottom: calc(22px + env(safe-area-inset-bottom));
+  padding-left: calc(22px + env(safe-area-inset-left));
+}
 
-    <main>
-      <section class="section-block archive-home" id="archive">
-        <div class="gallery-tools">
-          <label class="top-search" for="archiveSearch">
-            <input id="archiveSearch" type="search" placeholder="Search title or #tags..." />
-          </label>
+.site-header { text-align: center; background: #ececec; border: 2px ridge #cfcfcf; padding: 24px 20px 20px; margin-bottom: 20px; }
+.site-header h1 { font-family: Georgia, "Times New Roman", serif; color: #990000; font-size: clamp(34px, 12vw, 52px); letter-spacing: 4px; font-weight: normal; text-shadow: 1px 1px #ffffff; line-height: 1.05; }
+.header-divider { color: #999; font-size: 13px; letter-spacing: 8px; margin-top: 8px; }
+.site-header .tagline { font-family: Georgia, "Times New Roman", serif; font-style: italic; font-size: 14px; color: #444; max-width: 620px; margin: 12px auto 0; line-height: 1.5; }
 
-          <div class="quick-filters" aria-label="Archive filters">
-            <select id="filterImageStyle"><option value="">Color</option></select>
-            <select id="filterLocationType"><option value="">Loc</option></select>
-            <select id="filterContinent"><option value="">Continent</option></select>
-            <select id="filterSubjects"><option value="">Subj</option></select>
-            <select id="filterShot"><option value="">Shot</option></select>
-            <button type="button" data-reset="archive">Reset</button>
-          </div>
-        </div>
+.filter-panel { background: #c8c8c8; border: 2px inset #eee; padding: 12px 14px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.filter-panel input, .filter-panel select, .filter-panel button { font-family: Arial, sans-serif; font-size: 13px; background: #ececec; border: 2px outset #fff; padding: 5px 9px; color: #000; cursor: pointer; border-radius: 0; }
+.filter-panel input { flex: 1; min-width: 160px; }
+.filter-panel button:active { border: 2px inset #fff; }
+.filter-count { font-size: 12px; color: #555; margin-left: auto; white-space: nowrap; }
 
-        <div class="archive-results">
-          <p class="filter-count" id="archiveCount"></p>
-          <div id="archiveGrid" class="card-grid" aria-live="polite"></div>
-          <nav class="pagination" id="archivePagination" aria-label="Archive pages"></nav>
-        </div>
-      </section>
-    </main>
+#gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
 
-    <footer class="site-footer">
-      <a href="#home">[New]</a>
-      <a href="#archive">[Contents]</a>
-      <a href="#home">[Info]</a>
-      <a href="#archive">[Dept.]</a>
-      <a href="art.html">[Eryn’s Reference Collection]</a>
-    </footer>
+.card { background: #ececec; border: 2px ridge #c8c8c8; display: flex; flex-direction: column; cursor: pointer; transition: border-color .1s; }
+.card:hover { border-color: #111166; }
+.card-img-wrap { width: 100%; height: 160px; overflow: hidden; background: #bbb; display: flex; align-items: center; justify-content: center; position: relative; }
+.card-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card-img-wrap .img-fallback { font-size: 11px; color: #666; text-align: center; padding: 8px; display: none; }
+.card-body { padding: 10px 11px 12px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.card-title { font-family: Georgia, "Times New Roman", serif; font-size: 15px; font-weight: bold; line-height: 1.25; color: #990000; }
+.card-caption { font-size: 12px; color: #333; line-height: 1.45; font-style: italic; }
+.card-meta { font-size: 11px; color: #555; line-height: 1.4; letter-spacing: .3px; }
+.card-source { font-size: 10px; color: #777; line-height: 1.4; }
+.card-tags { display: flex; flex-wrap: wrap; gap: 4px 8px; margin-top: 2px; }
+.tag-link { font-size: 11px; color: #111166; text-decoration: none; cursor: pointer; white-space: nowrap; }
+.tag-link:hover { text-decoration: underline; }
+.card-link { font-size: 11px; color: #111166; text-decoration: none; margin-top: auto; padding-top: 6px; }
+.card-link:hover { text-decoration: underline; }
+.flag-badge { position: absolute; top: 4px; right: 4px; background: #cc8800; color: #fff; font-size: 9px; padding: 2px 4px; font-weight: bold; }
 
-    <div class="lightbox" id="cardLightbox" hidden>
-      <button class="lightbox-close" type="button" aria-label="Close enlarged card">×</button>
-      <button class="lightbox-nav lightbox-prev" type="button" aria-label="Previous card">‹</button>
-      <div class="lightbox-card" id="lightboxCard" role="dialog" aria-modal="true" aria-live="polite"></div>
-      <button class="lightbox-nav lightbox-next" type="button" aria-label="Next card">›</button>
-    </div>
+#empty-state { display: none; text-align: center; padding: 60px 20px; color: #666; font-size: 14px; grid-column: 1 / -1; line-height: 1.5; }
 
-    <script src="script.js?v=11" type="module"></script>
-  </body>
+.site-footer { margin-top: 24px; padding-top: 14px; border-top: 1px solid #b9b5ad; text-align: center; }
+.site-footer a { font-family: Georgia, "Times New Roman", serif; color: #111166; font-size: 13px; text-decoration: none; margin: 0 8px; white-space: nowrap; }
+.site-footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <h1>THE LANTERN</h1>
+  <div class="header-divider">&#10039;</div>
+  <p class="tagline">Filtering archives through the lens of my personal interests to discover the weird, the strange, the forgotten, and the overlooked details of everyday life.</p>
+</header>
+
+<div class="filter-panel">
+  <input id="searchInput" type="text" placeholder="Search title or #tags..." oninput="render()">
+  <select id="colorFilter" onchange="render()"><option value="">SAT</option></select>
+  <select id="locFilter" onchange="render()"><option value="">INT/EXT</option></select>
+  <select id="continentFilter" onchange="render()"><option value="">GEOGRAPHY</option></select>
+  <select id="typeFilter" onchange="render()"><option value="">TYPE</option></select>
+  <select id="shotFilter" onchange="render()"><option value="">SHOT</option></select>
+  <button onclick="resetFilters()">Reset</button>
+  <span class="filter-count" id="filterCount"></span>
+</div>
+
+<div id="gallery"></div>
+
+<footer class="site-footer">
+  <a href="#" onclick="return false;">[New]</a>
+  <a href="#" onclick="return false;">[Contents]</a>
+  <a href="#" onclick="return false;">[Info]</a>
+  <a href="#" onclick="return false;">[Dept.]</a>
+  <a href="#" onclick="return false;">[Agencies]</a>
+</footer>
+
+<script>
+// The Lantern reads its records from the file your GitHub Action maintains:
+//   data/archive-data.json  (falls back to lantern-data.json if that's missing)
+// This file contains NO image data and is never written by the Action, so it
+// can be replaced freely, it can't lose images, and new images the Action adds
+// appear automatically. It also understands BOTH the old field names
+// (color/loc/manifestation/people) and the new ones the build script writes
+// (image_style/location_type/medium/people_count/time_period/collection_title).
+
+let lanternData = [];
+
+const FILTERS = [
+  { id: "colorFilter", field: "color", placeholder: "SAT" },
+  { id: "locFilter", field: "loc", placeholder: "INT/EXT" },
+  { id: "continentFilter", field: "continent", placeholder: "GEOGRAPHY" },
+  { id: "typeFilter", field: "type", placeholder: "TYPE" },
+  { id: "shotFilter", field: "shot", placeholder: "SHOT" }
+];
+
+function normalize(r) {
+  r = r || {};
+  return {
+    title: r.title || r.name || "Untitled",
+    imgSrc: r.imgSrc || "",
+    sourceUrl: r.sourceUrl || r.record_link || "",
+    caption: r.caption || "",
+    tags: Array.isArray(r.tags) ? r.tags : [],
+    color: r.color || r.image_style || "",
+    loc: r.loc || r.location_type || "",
+    continent: r.continent || "",
+    type: r.manifestation || r.medium || "",
+    shot: r.shot || "",
+    timePeriod: r.time_period || "",
+    collection: r.collection_title || "",
+    flag: r.flag || ""
+  };
+}
+
+async function load() {
+  const gallery = document.getElementById("gallery");
+  const sources = ["data/archive-data.json", "lantern-data.json"];
+  let raw = null, lastErr = "no file found";
+  for (let i = 0; i < sources.length; i += 1) {
+    try {
+      const res = await fetch(sources[i], { cache: "no-store" });
+      if (!res.ok) { lastErr = "HTTP " + res.status + " for " + sources[i]; continue; }
+      const json = await res.json();
+      if (Array.isArray(json)) { raw = json; break; }
+      lastErr = sources[i] + " is not a list";
+    } catch (e) { lastErr = e.message; }
+  }
+  if (!raw) {
+    gallery.innerHTML = '<div id="empty-state" style="display:block;">Couldn\u2019t load the data file (' + lastErr + ').<br>This page must be viewed on the live site (or a local server), not by double-clicking the file.</div>';
+    return;
+  }
+  lanternData = raw.map(normalize);
+  buildFilters();
+  render();
+}
+
+function buildFilters() {
+  FILTERS.forEach(function (cfg) {
+    const sel = document.getElementById(cfg.id);
+    const values = Array.from(new Set(lanternData.map(function (i) { return i[cfg.field]; }).filter(Boolean))).sort();
+    sel.innerHTML = '<option value="">' + cfg.placeholder + '</option>' +
+      values.map(function (v) {
+        const safe = String(v).replace(/"/g, "&quot;");
+        return '<option value="' + safe + '">' + v + '</option>';
+      }).join("");
+  });
+}
+
+function getFilters() {
+  return {
+    search: document.getElementById("searchInput").value.toLowerCase().trim(),
+    color: document.getElementById("colorFilter").value,
+    loc: document.getElementById("locFilter").value,
+    continent: document.getElementById("continentFilter").value,
+    type: document.getElementById("typeFilter").value,
+    shot: document.getElementById("shotFilter").value,
+    tag: window._activeTag || ""
+  };
+}
+
+function matchesFilters(item, f) {
+  if (f.color && item.color !== f.color) return false;
+  if (f.loc && item.loc !== f.loc) return false;
+  if (f.continent && item.continent !== f.continent) return false;
+  if (f.type && item.type !== f.type) return false;
+  if (f.shot && item.shot !== f.shot) return false;
+  if (f.tag && item.tags.indexOf(f.tag) === -1) return false;
+  if (f.search) {
+    const haystack = (item.title + " " + item.tags.join(" ") + " " + item.caption).toLowerCase();
+    if (haystack.indexOf(f.search) === -1) return false;
+  }
+  return true;
+}
+
+function render() {
+  const gallery = document.getElementById("gallery");
+  const f = getFilters();
+  const filtered = lanternData.filter(function (item) { return matchesFilters(item, f); });
+
+  document.getElementById("filterCount").textContent = filtered.length + " / " + lanternData.length;
+
+  if (filtered.length === 0) {
+    gallery.innerHTML = '<div id="empty-state" style="display:block;">No results. <a href="#" onclick="resetFilters();return false;">Reset filters</a></div>';
+    return;
+  }
+
+  gallery.innerHTML = filtered.map(function (n) {
+    const tagsHtml = n.tags.map(function (t) {
+      return '<a class="tag-link" href="#" onclick="filterByTag(\'' + t + '\');return false;">' + t + '</a>';
+    }).join(" ");
+
+    const notUnknown = function (v) { return (v && v !== "Unknown") ? v : null; };
+    const attrs = [n.color, notUnknown(n.loc), notUnknown(n.shot)].filter(Boolean).join(" \u00b7 ");
+    const src = [n.continent, n.timePeriod, n.collection].filter(notUnknown).join(" | ");
+
+    const flagHtml = n.flag ? '<span class="flag-badge" title="' + String(n.flag).replace(/"/g, "&quot;") + '">!</span>' : "";
+
+    return '' +
+      '<div class="card" onclick="window.open(\'' + n.sourceUrl + '\',\'_blank\')">' +
+        '<div class="card-img-wrap">' +
+          '<img src="' + n.imgSrc + '" alt="' + String(n.title).replace(/"/g, "&quot;") + '" loading="lazy" ' +
+               'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'">' +
+          '<div class="img-fallback">Image unavailable<br><small>' + n.title + '</small></div>' +
+          flagHtml +
+        '</div>' +
+        '<div class="card-body">' +
+          '<div class="card-title">' + n.title + '</div>' +
+          (n.caption ? '<div class="card-caption">' + n.caption + '</div>' : '') +
+          (attrs ? '<div class="card-meta">' + attrs + '</div>' : '') +
+          (src ? '<div class="card-source">' + src + '</div>' : '') +
+          '<div class="card-tags">' + tagsHtml + '</div>' +
+          '<a class="card-link" href="' + n.sourceUrl + '" target="_blank" onclick="event.stopPropagation()">View source &rarr;</a>' +
+        '</div>' +
+      '</div>';
+  }).join("");
+}
+
+function filterByTag(tag) {
+  window._activeTag = tag;
+  document.getElementById("searchInput").value = tag;
+  render();
+}
+
+function resetFilters() {
+  window._activeTag = "";
+  document.getElementById("searchInput").value = "";
+  FILTERS.forEach(function (cfg) { document.getElementById(cfg.id).value = ""; });
+  render();
+}
+
+load();
+</script>
+</body>
 </html>
