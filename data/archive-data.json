@@ -1,5 +1,51 @@
 [
   {
+    "title": "Farmer telegraph repeater patent model",
+    "imgSrc": "https://ids.si.edu/ids/deliveryService?id=NMAH-NMAH2001-09144",
+    "sourceUrl": "https://n2t.net/ark:/65665/ng49ca746a5-3941-704b-e053-15f76fa0b4fa",
+    "caption": "Telegraph repeaters amplified electrical signals in a telegraph line. Telegraph messages traveled as a series of electrical pulses through a wire from a transmitter to a receiver. Short pulses made a dot, slightly longer pulses a dash. The pulses faded in strength as they traveled through the wire, limiting the distance a message could travel. Repeaters remedied that problem by detecting a weak signal and using a local power source to re-energize and re-transmit the signal down the line.",
+    "subjects": [],
+    "tags": [
+      "#patents",
+      "#telegraph_relays_repeaters",
+      "#models_representations",
+      "#communications"
+    ],
+    "medium": "Photography",
+    "image_style": "Unknown",
+    "people_count": "Unknown",
+    "shot": "Unknown",
+    "location_type": "Unknown",
+    "continent": "North America",
+    "time_period": "1850–1899",
+    "dateAdded": "2026-06-17",
+    "source_id": "SRC-SI",
+    "collection_title": "Work and Industry: Electricity",
+    "source_type": "A"
+  },
+  {
+    "title": "Peromyscus leucopus noveboracensis",
+    "imgSrc": "https://ids.si.edu/ids/deliveryService/id/ark:/65665/m306c2813460714806b2f42aa647377722",
+    "sourceUrl": "http://n2t.net/ark:/65665/33fa7f1a6-fc65-4be3-9e69-f3a498a5339a",
+    "caption": "20 Dec 2019",
+    "subjects": [],
+    "tags": [
+      "#animals",
+      "#mammals"
+    ],
+    "medium": "Photography",
+    "image_style": "Unknown",
+    "people_count": "Unknown",
+    "shot": "Unknown",
+    "location_type": "Unknown",
+    "continent": "North America",
+    "time_period": "1960–1979",
+    "dateAdded": "2026-06-17",
+    "source_id": "SRC-SI",
+    "collection_title": "Vertebrate Zoology",
+    "source_type": "A"
+  },
+  {
     "title": "Blacksmith hammering on anvil, two hands",
     "imgSrc": "https://ids.si.edu/ids/deliveryService?id=SIA-2004-47488",
     "sourceUrl": "https://n2t.net/ark:/65665/ng49ca746b4-24b5-704b-e053-15f76fa0b4fa",
