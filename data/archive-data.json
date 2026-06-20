@@ -1,5 +1,26 @@
 [
   {
+    "title": "Oenothera neomexicana (Small) Munz",
+    "imgSrc": "https://ids.si.edu/ids/deliveryService/id/ark:/65665/m34be36a674faf4b56addf621614932b79",
+    "sourceUrl": "http://n2t.net/ark:/65665/3ac79cf6d-01b6-46fb-9236-588ec6cf3213",
+    "caption": "US",
+    "subjects": [],
+    "tags": [
+      "#dicotyledonae"
+    ],
+    "medium": "Photography",
+    "image_style": "Unknown",
+    "people_count": "Unknown",
+    "shot": "Unknown",
+    "location_type": "Unknown",
+    "continent": "North America",
+    "time_period": "2000–Present",
+    "dateAdded": "2026-06-20",
+    "source_id": "SRC-SI",
+    "collection_title": "Botany",
+    "source_type": "A"
+  },
+  {
     "title": "Peromyscus leucopus noveboracensis",
     "imgSrc": "https://ids.si.edu/ids/deliveryService/id/ark:/65665/m3f9dcaecdae9e47df9a6838826041458f",
     "sourceUrl": "http://n2t.net/ark:/65665/337fa77a9-47c0-4dd7-848a-898dfde976d4",
