@@ -9,9 +9,9 @@ This branch resets The Lantern back to its bones.
 - `data/archive-data.json` as the active gallery data source
 - `data/references-data.json` as a reserved supporting data file
 - `lantern-data.json` as an empty legacy placeholder so old references cannot repopulate the site
-- `package.json` scripts
+- `package.json` with validation only
 - `scripts/validate-data.mjs`
-- `scripts/build-data.mjs`, now reduced to a scaffold-only script
+- `scripts/build-data.mjs`, now reduced to a scaffold-only script and no longer exposed as an npm script
 
 ## Wiped / simplified
 
@@ -22,6 +22,7 @@ This branch resets The Lantern back to its bones.
 - Local liked/hidden state
 - Lightbox/modal behavior
 - Smithsonian auto-harvesting logic
+- The `build:data` package script
 - Any intentional GitHub Actions automation for the reset branch
 
 ## Current behavior
