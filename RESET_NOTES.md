@@ -48,6 +48,6 @@ Each should contain only:
 Decide whether the next Lantern should be:
 
 1. a manually curated gallery,
-2. a Google Sheet–driven gallery,
+2. a Google Sheet-driven gallery,
 3. an automated hunter/review/publish system,
 4. or a hybrid where automation gathers candidates but only approved rows publish.
