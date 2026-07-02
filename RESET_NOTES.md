@@ -6,8 +6,9 @@ This branch resets The Lantern back to its bones.
 
 - Static `index.html` site
 - `data/` folder
-- `data/archive-data.json` as the gallery data source
+- `data/archive-data.json` as the active gallery data source
 - `data/references-data.json` as a reserved supporting data file
+- `lantern-data.json` as an empty legacy placeholder so old references cannot repopulate the site
 - `package.json` scripts
 - `scripts/validate-data.mjs`
 - `scripts/build-data.mjs`, now reduced to a scaffold-only script
@@ -15,30 +16,30 @@ This branch resets The Lantern back to its bones.
 ## Wiped / simplified
 
 - Existing accumulated gallery records
+- Root-level legacy image records in `lantern-data.json`
 - Complex filter set
 - Pagination
 - Local liked/hidden state
 - Lightbox/modal behavior
 - Smithsonian auto-harvesting logic
+- Any intentional GitHub Actions automation for the reset branch
 
 ## Current behavior
 
 The site loads `data/archive-data.json` and renders any records in that array. If the array is empty, it shows a reset message.
 
-The expected minimum record shape is:
+The currently expected empty data files are:
+
+```text
+data/archive-data.json
+data/references-data.json
+lantern-data.json
+```
+
+Each should contain only:
 
 ```json
-{
-  "title": "Example title",
-  "imgSrc": "https://example.com/image.jpg",
-  "sourceUrl": "https://example.com/source",
-  "caption": "Optional caption",
-  "tags": ["#example"],
-  "medium": "Photography",
-  "time_period": "1900–1919",
-  "collection_title": "Example Collection",
-  "source_id": "SRC-EXAMPLE"
-}
+[]
 ```
 
 ## Next decision
